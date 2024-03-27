@@ -1,3 +1,5 @@
 ## Ignore all of these files:
 
 **/node_modules
+mynotes.txt
+git_help.txt
