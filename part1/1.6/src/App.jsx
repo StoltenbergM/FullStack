@@ -4,13 +4,23 @@ const Button = ({ handleButton, text }) => (
   <button onClick={handleButton}>{text}</button>
 )
 
-const Statistics = ({ good, neutral, bad }) => (
-  <div>
-    <p>good: {good}</p>
-    <p>neutral: {neutral}</p>
-    <p>bad: {bad}</p>
-  </div>
-)
+const Statistics = ({ good, neutral, bad }) => {
+  const total = good + neutral + bad
+  const totalPoints = good * 1 + neutral * 0 + bad * -1
+  const average = totalPoints / total
+  const positiveProc = good / total * 100
+  
+    return (
+    <div>
+      <p>good: {good}</p>
+      <p>neutral: {neutral}</p>
+      <p>bad: {bad}</p>
+      <p>all: {total}</p>
+      <p>average: {average}</p>
+      <p>positive: {positiveProc} %</p>
+    </div>
+  )
+}
 
 const App = () => {
   const [good, setGood] = useState(0)
