@@ -10,16 +10,24 @@ const Statistics = ({ good, neutral, bad }) => {
   const average = totalPoints / total
   const positiveProc = good / total * 100
   
+  if (total > 0) {
     return (
+      <div>
+        <p>good: {good}</p>
+        <p>neutral: {neutral}</p>
+        <p>bad: {bad}</p>
+        <p>all: {total}</p>
+        <p>average: {average}</p>
+        <p>positive: {positiveProc} % </p>
+      </div>
+    )
+  }
+  return (
     <div>
-      <p>good: {good}</p>
-      <p>neutral: {neutral}</p>
-      <p>bad: {bad}</p>
-      <p>all: {total}</p>
-      <p>average: {average}</p>
-      <p>positive: {positiveProc} %</p>
+      No feedback given
     </div>
   )
+  
 }
 
 const App = () => {
