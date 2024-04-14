@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-const DisplayAnecdote = ({ anecdotes, selected }) => (
-  <div>{anecdotes[selected]}</div>
+const DisplayAnecdote = ({ anecdotes, anecindex }) => (
+  <div>{anecdotes[anecindex]}</div>
 )
 
 const Button = ({ doFunction, text }) => (
@@ -20,11 +20,12 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
+  
   const arraylength = anecdotes.length
   const emptyarray = Array(arraylength).fill(0)
 
   const [selected, setSelected] = useState(0)
-  const [points, storeAnecdotepoints] = useState(emptyarray)
+  const [points, setAnecdotepoints] = useState(emptyarray)
 
   const getNumberBetween = (max) => {
     return Math.floor(Math.random() * max)
@@ -38,19 +39,29 @@ const App = () => {
   }
 
   // updating the state storing the points (function in a function)
-  const storePoints = (currentanecdote) => () => {
+  const setPoints = (currentanecdote) => () => {
     console.log('vote for anecdote ', selected)
     const copy = [...points]
     copy[currentanecdote] += 1
-    storeAnecdotepoints(copy)
+    setAnecdotepoints(copy)
   }
+
+  // find max voted anecdote by finding max value, and then the index for that
+  const maxValue = Math.max(...points)
+  const maxVoted = () => {
+    return points.indexOf(maxValue)
+  } 
 
   return (
     <div>
-      <DisplayAnecdote anecdotes={anecdotes} selected={selected}/>
+      <h1>Anecdote of the day</h1>
+      <DisplayAnecdote anecdotes={anecdotes} anecindex={selected}/>
       <p>has {points[selected]} votes</p>
       <Button doFunction={generateNumber} text={'Generate anecdote'}/>
-      <Button doFunction={storePoints(selected)} text={'vote'}/>
+      <Button doFunction={setPoints(selected)} text={'vote'}/>
+      <h1>Anecdote with most votes</h1>
+      <DisplayAnecdote anecdotes={anecdotes} anecindex={maxVoted()}/>
+      <p>has {maxValue} votes</p>
     </div>
   )
 }
