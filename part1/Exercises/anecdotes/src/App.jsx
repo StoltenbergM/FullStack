@@ -1,13 +1,11 @@
 import { useState } from 'react'
 
 const DisplayAnecdote = ({ anecdotes, selected }) => (
-  <div>
-    {anecdotes[selected]}
-  </div>
+  <div>{anecdotes[selected]}</div>
 )
 
-const Button = ({ generateAnecdote, text }) => (
-  <button onClick={generateAnecdote}>{text}</button>
+const Button = ({ doFunction, text }) => (
+  <button onClick={doFunction}>{text}</button>
 )
 
 const App = () => {
@@ -22,24 +20,37 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
+  const arraylength = anecdotes.length
+  const emptyarray = Array(arraylength).fill(0)
 
   const [selected, setSelected] = useState(0)
+  const [points, storeAnecdotepoints] = useState(emptyarray)
 
   const getNumberBetween = (max) => {
     return Math.floor(Math.random() * max)
   }
 
+  // generate a number and setState for setSelected, to update anecdote
   const generateNumber = () => {
-    const max = anecdotes.length
-    const getNumber = getNumberBetween(max)
+    const getNumber = getNumberBetween(arraylength)
     console.log('generating anecdote number ', getNumber)
-    return setSelected(getNumber)
+    setSelected(getNumber)
+  }
+
+  // updating the state storing the points (function in a function)
+  const storePoints = (currentanecdote) => () => {
+    console.log('vote for anecdote ', selected)
+    const copy = [...points]
+    copy[currentanecdote] += 1
+    storeAnecdotepoints(copy)
   }
 
   return (
     <div>
       <DisplayAnecdote anecdotes={anecdotes} selected={selected}/>
-      <Button generateAnecdote={generateNumber} text={'Generate anecdote'}/>
+      <p>has {points[selected]} votes</p>
+      <Button doFunction={generateNumber} text={'Generate anecdote'}/>
+      <Button doFunction={storePoints(selected)} text={'vote'}/>
     </div>
   )
 }
