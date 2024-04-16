@@ -85,6 +85,22 @@ const App = () => {
           id: 2
         }
       ]
+    }, 
+    {
+      name: 'Test',
+      id: 3,
+      parts: [
+        {
+          name: 'Really easy',
+          exercises: 5,
+          id: 1
+        },
+        {
+          name: 'Really hard',
+          exercises: 5,
+          id: 2
+        }
+      ]
     }
   ]
 
