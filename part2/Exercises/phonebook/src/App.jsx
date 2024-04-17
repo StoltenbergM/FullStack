@@ -4,7 +4,7 @@ const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
 
-  // 
+  // adding a new name triggers this
   const addName = (event) => {
     event.preventDefault()
     console.log('Clicked', event.target)
@@ -12,13 +12,23 @@ const App = () => {
       theName: newName,
       id: persons.length + 1,
     }
-    setPersons(persons.concat(nameWithID))
-    console.log('Add name', nameWithID)
+
+    // checking if the name already exists in the persons state
+    const checkForEqualName = persons.filter((persons) => persons.theName === nameWithID.theName)
+    console.log('is equal name', checkForEqualName)
+
+    // if a dublicate exists, the filter object will save it and this condition will be true
+    if (checkForEqualName.length > 0) {
+      console.log('The name "', nameWithID.theName, '" already exist')
+      alert('The name ' + nameWithID.theName + ' already exist')
+    } else {
+      setPersons(persons.concat(nameWithID))
+      console.log('Added name', nameWithID.theName)
+    }
     setNewName('')
   }
 
   const handleAddedName = (event) => {
-    console.log('Handle name:', event.target.value)
     setNewName(event.target.value)
   }
 
