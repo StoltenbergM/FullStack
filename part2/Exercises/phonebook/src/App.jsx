@@ -1,5 +1,43 @@
 import { useState } from 'react'
 
+const Filter = ({ addFilter, newFilter, handleFilter }) => (
+  <form onSubmit={addFilter}>
+    <div>
+      filter: 
+      <input
+        value={newFilter}
+        onChange={handleFilter}
+      />
+    </div>
+  </form>
+)
+
+const AddPerson = ({ addName, newName, handleAddedName, newNumber, handleAddedNumber }) => (
+  <form onSubmit={addName}>
+    <div>
+      name: 
+      <input 
+        value={newName}
+        onChange={handleAddedName}
+      />
+    </div>
+    <div>
+      number: 
+      <input 
+        value={newNumber}
+        onChange={handleAddedNumber}
+      />
+    </div>
+    <div>
+      <button type="submit">add</button>
+    </div>
+  </form>
+)
+
+const ShowPerson = ({ person }) => (
+  <li>{person.name} {person.number}</li>
+)
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -61,38 +99,18 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addFilter}>
-        <div>
-          filter: 
-          <input
-            value={newFilter}
-            onChange={handleFilter}
-          />
-        </div>
-      </form>
+      <Filter addFilter={addFilter} newFilter={newFilter} handleFilter={handleFilter}/>
       <h2>Add new</h2>
-      <form onSubmit={addName}>
-        <div>
-          name: 
-          <input 
-            value={newName}
-            onChange={handleAddedName}
-          />
-        </div>
-        <div>
-          number: 
-          <input 
-            value={newNumber}
-            onChange={handleAddedNumber}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <AddPerson 
+        addName={addName} 
+        newName={newName} 
+        handleAddedName={handleAddedName} 
+        newNumber={newNumber} 
+        handleAddedNumber={handleAddedNumber} 
+      />
       <h2>Numbers</h2>
       {filteredPersons.map(person => 
-        <li key={person.id}>{person.name} {person.number}</li>
+        <ShowPerson key={person.id} person={person} />
       )}
     </div>
   )
