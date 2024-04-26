@@ -15,7 +15,7 @@ const App = () => {
 
     // checking if the name already exists in the persons state
     const checkForEqualName = persons.filter((persons) => persons.theName === nameWithID.theName)
-    console.log('is equal name', checkForEqualName)
+    // The filter will only "filter" a name if nameWithID.newName exists in persons
 
     // if a dublicate exists, the filter object will save it and this condition will be true
     if (checkForEqualName.length > 0) {
