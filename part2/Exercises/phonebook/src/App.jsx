@@ -3,6 +3,7 @@ import { useState } from 'react'
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
   // adding a new name triggers this
   const addName = (event) => {
@@ -10,6 +11,7 @@ const App = () => {
     console.log('Clicked', event.target)
     const nameWithID = {
       theName: newName,
+      theNumber: newNumber,
       id: persons.length + 1,
     }
 
@@ -26,10 +28,14 @@ const App = () => {
       console.log('Added name', nameWithID.theName)
     }
     setNewName('')
+    setNewNumber('')
   }
 
   const handleAddedName = (event) => {
     setNewName(event.target.value)
+  }
+  const handleAddedNumber = (event) => {
+    setNewNumber(event.target.value)
   }
 
   return (
@@ -44,12 +50,19 @@ const App = () => {
           />
         </div>
         <div>
+          number: 
+          <input 
+            value={newNumber}
+            onChange={handleAddedNumber}
+          />
+        </div>
+        <div>
           <button type="submit">add</button>
         </div>
       </form>
       <h2>Numbers</h2>
       {persons.map(person => 
-        <li key={person.id}>{person.theName}</li>
+        <li key={person.id}>{person.theName} {person.theNumber}</li>
       )}
     </div>
   )
