@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import noteService from './services/notes'
 
 const Filter = ({ addFilter, newFilter, handleFilter }) => (
   <form onSubmit={addFilter}>
@@ -47,12 +48,10 @@ const App = () => {
 
   // fetching server data by the hook useEffect (from db.json)
   useEffect(() => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
+    noteService
+      .getAll()
+      .then(initialData => {
+        setPersons(initialData)
       })
   }, [])
   console.log('render', persons.length, 'persons')
@@ -84,11 +83,10 @@ const App = () => {
       console.log('The name "', nameWithID.name, '" already exist')
       alert('The name ' + nameWithID.name + ' already exist')
     } else {
-      axios      
-        .post('http://localhost:3001/persons', nameWithID)
-        .then(response => {
-          console.log('promise fulfilled')
-          setPersons(persons.concat(response.data))
+      noteService
+        .create(nameWithID)
+        .then(returnedNote => {
+          setPersons(persons.concat(returnedNote))
         })
     }
     setNewName('')
