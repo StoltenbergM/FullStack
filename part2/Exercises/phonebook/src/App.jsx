@@ -84,8 +84,12 @@ const App = () => {
       console.log('The name "', nameWithID.name, '" already exist')
       alert('The name ' + nameWithID.name + ' already exist')
     } else {
-      setPersons(persons.concat(nameWithID))
-      console.log('Added name', nameWithID.name)
+      axios      
+        .post('http://localhost:3001/persons', nameWithID)
+        .then(response => {
+          console.log('promise fulfilled')
+          setPersons(persons.concat(response.data))
+        })
     }
     setNewName('')
     setNewNumber('')
