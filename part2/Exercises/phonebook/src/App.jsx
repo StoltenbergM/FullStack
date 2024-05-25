@@ -36,8 +36,16 @@ const AddPerson = ({ addName, newName, handleAddedName, newNumber, handleAddedNu
   </form>
 )
 
-const ShowPerson = ({ person }) => (
-  <li>{person.name} {person.number}</li>
+const DeletePerson = ({ deleteName, person }) => (
+  <>
+    <button onClick={() => deleteName(person)}>delete</button>
+  </>
+)
+
+const ShowPerson = ({ person, deleteName }) => (
+  <li>
+    {person.name} {person.number} <DeletePerson deleteName={deleteName} person={person} />
+  </li>
 )
 
 const App = () => {
@@ -68,23 +76,22 @@ const App = () => {
   const addName = (event) => {
     event.preventDefault()
     console.log('Clicked', event.target)
-    const nameWithID = {
+    const newNameandNumber = {
       name: newName,
-      number: newNumber,
-      id: persons.length + 1,
+      number: newNumber
     }
 
     // checking if the name already exists in the persons state
-    const checkForEqualName = persons.filter((persons) => persons.name === nameWithID.name)
-    // The filter will only "filter" a name if nameWithID.newName exists in persons
+    const checkForEqualName = persons.filter((persons) => persons.name === newNameandNumber.name)
+    // The filter will only "filter" a name if newNameandNumber.newName exists in persons
 
     // if a dublicate exists, the filter object will save it and this condition will be true
     if (checkForEqualName.length > 0) {
-      console.log('The name "', nameWithID.name, '" already exist')
-      alert('The name ' + nameWithID.name + ' already exist')
+      console.log('The name "', newNameandNumber.name, '" already exist')
+      alert('The name ' + newNameandNumber.name + ' already exist')
     } else {
       noteService
-        .create(nameWithID)
+        .create(newNameandNumber)
         .then(returnedNote => {
           setPersons(persons.concat(returnedNote))
         })
@@ -106,6 +113,30 @@ const App = () => {
   const filteredPersons = persons.filter((person => 
     person.name.toLowerCase().includes(newFilter.toLowerCase())))
 
+  const deleteName = ( person ) => {
+    const id = person.id
+    const deletingName = ( id ) => {
+      noteService
+        .deleteName(id)
+        .then(returnedData => {
+          console.log(returnedData)
+          setPersons(persons.map(n => n.id !== id ? n : returnedData))
+          console.log('deleting', id)
+        })
+        .catch(error => {
+          alert(
+            `the person was already deleted from server`
+          )
+          setPersons(persons.filter(n => n.id !== id)) //The error message is displayed to the user with alert dialog popup, and the deleted note gets filtered out from the state.
+        })
+    } 
+
+    if (confirm(`Delete ${person.name}?`)) {
+      deletingName(id)
+      console.log(person)
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -120,7 +151,7 @@ const App = () => {
       />
       <h2>Numbers</h2>
       {filteredPersons.map(person => 
-        <ShowPerson key={person.id} person={person} />
+        <ShowPerson key={person.id} person={person} deleteName={deleteName}/>
       )}
     </div>
   )

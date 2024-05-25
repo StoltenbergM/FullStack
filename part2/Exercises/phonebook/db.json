@@ -16,19 +16,14 @@
       "id": "3"
     },
     {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": "4"
+      "id": "9dd7",
+      "name": "Hans",
+      "number": "1919"
     },
     {
-      "id": 5,
-      "name": "Hello World",
-      "number": "1234"
-    },
-    {
-      "id": 6,
-      "name": "New Person here",
-      "number": "88888888"
+      "id": "ef30",
+      "name": "Thorsten",
+      "number": "1240"
     }
   ]
 }
