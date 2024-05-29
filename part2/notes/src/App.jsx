@@ -3,9 +3,37 @@ import axios from 'axios'
 import Note from './components/Note'
 import noteService from './services/notes'
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='error'>
+      {message}
+    </div>
+  )
+}
+
+const Footer = () => {
+  const footerStyle = {
+    color: 'green',
+    fontStyle: 'italic',
+    fontSize: 16
+  }
+  return (
+    <div style={footerStyle}>
+      <br />
+      <em>Note app, Department of Computer Science, University of Helsinki 2024</em>
+    </div>
+  )
+}
+
 const App = () => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
+  const [showAll, setShowAll] = useState(true)
+  const [errorMessage, setErrorMessage] = useState('some error happened...')
 
   // What to do when the input changes
   const handleNoteChange = (event) => {
@@ -34,9 +62,12 @@ const App = () => {
         setNotes(notes.map(n => n.id !== id ? n : returnedNote))
       })
       .catch(error => {
-        alert(
+        setErrorMessage(
           `the note '${note.content}' was already deleted from server`
         )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
         setNotes(notes.filter(n => n.id !== id)) //The error message is displayed to the user with alert dialog popup, and the deleted note gets filtered out from the state.
       })
   }
@@ -57,11 +88,22 @@ const App = () => {
       })
   }
 
+  // function like if else. if condition ? true : false
+  const notesToShow = showAll
+  ? notes
+  : notes.filter(note => note.important === true)
+
   return (
     <div>
       <h1>Notes</h1>
+      <Notification message={errorMessage} />
+      <div>
+        <button onClick={() => setShowAll(!showAll)}>
+          show {showAll ? 'important' : 'all' }
+        </button>
+      </div>        
       <ul>
-        {notes.map(note => 
+        {notesToShow.map(note => 
           <Note 
             key={note.id} 
             note={note} 
@@ -76,6 +118,7 @@ const App = () => {
         />
         <button type="submit">save</button>
       </form>
+      <Footer />
     </div>
   )
 }

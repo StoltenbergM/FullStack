@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import noteService from './services/notes'
+import Notification from './components/Notification'
 
 const Filter = ({ addFilter, newFilter, handleFilter }) => (
   <form onSubmit={addFilter}>
@@ -53,6 +54,7 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   // fetching server data by the hook useEffect (from db.json)
   useEffect(() => {
@@ -112,6 +114,13 @@ const App = () => {
         .create(newNameandNumber)
         .then(returnedNote => {
           setPersons(persons.concat(returnedNote))
+          // setting a styled notification for 3 sec
+          setNotificationMessage(
+            `Added '${newNameandNumber.name}'`
+          )
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 3000)
         })
     }
     setNewName('')
@@ -157,6 +166,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter addFilter={addFilter} newFilter={newFilter} handleFilter={handleFilter}/>
       <h2>Add new</h2>
       <AddPerson 
