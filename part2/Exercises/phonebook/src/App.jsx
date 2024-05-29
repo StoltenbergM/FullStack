@@ -55,6 +55,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [notificationMessage, setNotificationMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(false)
 
   // fetching server data by the hook useEffect (from db.json)
   useEffect(() => {
@@ -103,10 +104,16 @@ const App = () => {
             console.log('updating the number for ', existingID)
           })
           .catch(error => {
-            alert(
+            // setting a styled error for 3 sec
+            setNotificationMessage(
               `the person was already deleted from server`
             )
-            setPersons(persons.filter(n => n.id !== id)) //The error message is displayed to the user with alert dialog popup, and the deleted note gets filtered out from the state.
+            setErrorMessage(true) // toggle the error message to make the text red
+            setTimeout(() => {
+              setNotificationMessage(null)
+              setErrorMessage(false)
+            }, 3000)
+            setPersons(persons.filter(n => n.id !== existingID)) //The error message is displayed to the user with alert dialog popup, and the deleted note gets filtered out from the state.
           })
       }
     } else {
@@ -166,7 +173,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage} />
+      <Notification message={notificationMessage} errorNotification={errorMessage}/>
       <Filter addFilter={addFilter} newFilter={newFilter} handleFilter={handleFilter}/>
       <h2>Add new</h2>
       <AddPerson 
