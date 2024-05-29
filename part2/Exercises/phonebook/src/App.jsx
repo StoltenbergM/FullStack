@@ -87,8 +87,26 @@ const App = () => {
 
     // if a dublicate exists, the filter object will save it and this condition will be true
     if (checkForEqualName.length > 0) {
-      console.log('The name "', newNameandNumber.name, '" already exist')
-      alert('The name ' + newNameandNumber.name + ' already exist')
+      const existingPerson = checkForEqualName[0]
+      const existingName = existingPerson.name
+      const existingID = existingPerson.id
+
+      if (window.confirm(`The name ${existingName} is already added to the phonebook. Do you want to replace the old number with the new one?`)) {
+        console.log("the new name", existingName)
+        noteService
+          .updateNumber(existingID, newNameandNumber)
+          .then(returnedData => {
+            console.log(returnedData)
+            setPersons(persons.map(n => n.id !== existingID ? n : returnedData))
+            console.log('updating the number for ', existingID)
+          })
+          .catch(error => {
+            alert(
+              `the person was already deleted from server`
+            )
+            setPersons(persons.filter(n => n.id !== id)) //The error message is displayed to the user with alert dialog popup, and the deleted note gets filtered out from the state.
+          })
+      }
     } else {
       noteService
         .create(newNameandNumber)
@@ -118,10 +136,9 @@ const App = () => {
     const deletingName = ( id ) => {
       noteService
         .deleteName(id)
-        .then(returnedData => {
-          console.log(returnedData)
-          setPersons(persons.map(n => n.id !== id ? n : returnedData))
-          console.log('deleting', id)
+        .then(() => {
+          setPersons(persons.filter(n => n.id !== id))
+          console.log('deleted', id)
         })
         .catch(error => {
           alert(
@@ -131,7 +148,7 @@ const App = () => {
         })
     } 
 
-    if (confirm(`Delete ${person.name}?`)) {
+    if (window.confirm(`Delete ${person.name}?`)) {
       deletingName(id)
       console.log(person)
     }
