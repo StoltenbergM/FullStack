@@ -30,10 +30,10 @@ const Footer = () => {
 }
 
 const App = () => {
-  const [notes, setNotes] = useState([])
+  const [notes, setNotes] = useState(null)
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
-  const [errorMessage, setErrorMessage] = useState('some error happened...')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   // What to do when the input changes
   const handleNoteChange = (event) => {
@@ -92,6 +92,11 @@ const App = () => {
   const notesToShow = showAll
   ? notes
   : notes.filter(note => note.important === true)
+
+  // do not render anything if notes is still null
+  if (!notes) { 
+    return null 
+  }
 
   return (
     <div>
