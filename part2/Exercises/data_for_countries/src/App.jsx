@@ -26,6 +26,7 @@ const App = () => {
         country.name.common.toLowerCase().includes(value.toLowerCase())
     );
     setShownCountries(filteredCountries);
+    console.log('setting shown countries', filteredCountries)
   }
   }, [value, countries]);
 
@@ -58,6 +59,9 @@ const App = () => {
           shownCountries.map((country) => (
             <div key={country.cca3}>
               {country.name.common}
+              <button onClick={() => setShownCountries([country])}>
+                show
+              </button>
             </div>
           ))
         ) : 
