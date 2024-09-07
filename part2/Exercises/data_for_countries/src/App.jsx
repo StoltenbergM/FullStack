@@ -32,7 +32,7 @@ const App = () => {
   const handleChange = (event) => {
     setValue(event.target.value)
     console.log('event.target.value', event.target.value)
-    console.log('countries', countries)
+    console.log('shown countries', shownCountries)
   }
 
   return (
@@ -54,12 +54,14 @@ const App = () => {
           </ul>
           <img src={shownCountries[0].flags.png} alt="Country Flag" width="200" />
         </div>
-        ) : (
+        ) : (shownCountries.length <= 10 ? (
           shownCountries.map((country) => (
             <div key={country.cca3}>
               {country.name.common}
             </div>
           ))
+        ) : 
+          <p>Too many matches, specify further</p>
         )}
       </>
     </div>
