@@ -5,6 +5,7 @@ const App = () => {
   const [value, setValue] = useState('')
   const [countries, setCountries] = useState(null)
   const [shownCountries, setShownCountries] = useState([])
+  const [weatherData, setWeatherData] = useState(null)
 
   const allCountries = () => {
     axios
@@ -15,10 +16,29 @@ const App = () => {
     })
   }
 
+  const api_key = import.meta.env.VITE_SOME_KEY
+  
+  const getWeatherData = () => {
+    if (shownCountries.length === 1) {
+      const city_name = shownCountries[0].capital[0]
+      axios
+      .get(`https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${api_key}`)
+      .then(response => {
+        setWeatherData(response.data)
+        console.log('fetched weather data', response.data)
+      })
+    }
+  }
+
   useEffect(() => {
-    console.log('effect')
+    console.log('run the allCountries() function - effect')
     allCountries()
   }, [])
+
+  useEffect(() => {
+    console.log('run the getWeatherData() function - effect')
+    getWeatherData()
+  }, [shownCountries])
 
   useEffect(() => {
     if (countries) {
@@ -26,6 +46,7 @@ const App = () => {
         country.name.common.toLowerCase().includes(value.toLowerCase())
     );
     setShownCountries(filteredCountries);
+    console.log('countries:', countries)
     console.log('setting shown countries', filteredCountries)
   }
   }, [value, countries]);
@@ -54,6 +75,10 @@ const App = () => {
             ))}
           </ul>
           <img src={shownCountries[0].flags.png} alt="Country Flag" width="200" />
+          <h2>Weather in {shownCountries[0].capital ? shownCountries[0].capital[0] : 'N/A'}</h2>
+          <li>Temperature {weatherData && weatherData.main.temp ? weatherData.main.temp + ' °C' : 'Loading...'}</li>
+          <img src={'https://openweathermap.org/img/wn/${weatherData.weather.icon}@2x.png'} alt="Weather Icon" width="100" />
+          <li>Wind speed {weatherData && weatherData.wind.speed ? weatherData.wind.speed + ' m/s' : 'Loading...'}</li>
         </div>
         ) : (shownCountries.length <= 10 ? (
           shownCountries.map((country) => (
