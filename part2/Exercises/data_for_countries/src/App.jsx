@@ -27,6 +27,9 @@ const App = () => {
         setWeatherData(response.data)
         console.log('fetched weather data', response.data)
       })
+      .catch(error => {
+        console.error('Error fetching weather data:', error);
+      })
     }
   }
 
@@ -46,7 +49,6 @@ const App = () => {
         country.name.common.toLowerCase().includes(value.toLowerCase())
     );
     setShownCountries(filteredCountries);
-    console.log('countries:', countries)
     console.log('setting shown countries', filteredCountries)
   }
   }, [value, countries]);
@@ -54,7 +56,6 @@ const App = () => {
   const handleChange = (event) => {
     setValue(event.target.value)
     console.log('event.target.value', event.target.value)
-    console.log('shown countries', shownCountries)
   }
 
   return (
@@ -76,9 +77,9 @@ const App = () => {
           </ul>
           <img src={shownCountries[0].flags.png} alt="Country Flag" width="200" />
           <h2>Weather in {shownCountries[0].capital ? shownCountries[0].capital[0] : 'N/A'}</h2>
-          <li>Temperature {weatherData && weatherData.main.temp ? weatherData.main.temp + ' °C' : 'Loading...'}</li>
-          <img src={'https://openweathermap.org/img/wn/${weatherData.weather.icon}@2x.png'} alt="Weather Icon" width="100" />
-          <li>Wind speed {weatherData && weatherData.wind.speed ? weatherData.wind.speed + ' m/s' : 'Loading...'}</li>
+          <li>Temperature {weatherData && weatherData?.main?.temp ? weatherData.main.temp + ' °C' : 'Loading...'}</li>
+          <img src={`https://openweathermap.org/img/wn/${weatherData?.weather[0]?.icon}@2x.png`} alt="Weather Icon" width="100" />
+          <li>Wind speed {weatherData && weatherData?.wind?.speed ? weatherData.wind.speed + ' m/s' : 'Loading...'}</li>
         </div>
         ) : (shownCountries.length <= 10 ? (
           shownCountries.map((country) => (
