@@ -27,9 +27,25 @@ let notes = [
 ]
 
 app.get('/api/persons', (request, response) => {
-    response.json(notes)
-  })
+  response.json(notes)
+})
 
+// Function that returns the CURRENT time (in miliseconds since 1970)
+const time = () => {
+  return Date.now()
+}
+
+// Function that counts the number of notes
+const count_notes = () => {
+  return notes.length
+}
+
+app.get('/info', (request, response) => {
+  const show_time_stamp = Date(time())
+  const count_persons = count_notes()
+  console.log("show_time", show_time_stamp)
+  response.send(`<p>Phonebook has info for ${count_persons} people</p><p>${show_time_stamp}<p>`)
+})
 
 const PORT = 3001
 app.listen(PORT, () => {
