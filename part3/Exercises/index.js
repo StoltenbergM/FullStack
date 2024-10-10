@@ -42,7 +42,6 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
-
 // Function that returns the CURRENT time (in miliseconds since 1970)
 const time = () => {
   return Date.now()
@@ -58,6 +57,14 @@ app.get('/info', (request, response) => {
   const count_persons = count_notes()
   console.log("show_time", show_time_stamp)
   response.send(`<p>Phonebook has info for ${count_persons} people</p><p>${show_time_stamp}<p>`)
+})
+
+// making a delete route
+app.delete('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  notes = notes.filter(note => note.id !== id)
+
+  response.status(204).end()
 })
 
 const PORT = 3001
