@@ -30,6 +30,19 @@ app.get('/api/persons', (request, response) => {
   response.json(notes)
 })
 
+// make routes for different id, and 404 status code if it does not exist
+app.get('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  const note = notes.find(note => note.id === id)
+  
+  if (note) {
+    response.json(note)
+  } else {
+    response.status(404).end()
+  }
+})
+
+
 // Function that returns the CURRENT time (in miliseconds since 1970)
 const time = () => {
   return Date.now()
