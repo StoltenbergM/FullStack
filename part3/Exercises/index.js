@@ -67,6 +67,36 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
+const generaterandomID = () => {
+  // generate random number from notes.length to 10000
+  const minnumberID = notes.length > 0
+    ? Math.max(...notes.map(n => Number(n.id)))
+    : 0
+  const random_number = Math.floor(Math.random() * 10000 + minnumberID)
+  return random_number
+}
+
+// post new person
+app.post('/api/persons', (request, response) => {  
+  const body = request.body
+
+  if (!body.content) {
+    return response.status(400).json({
+      error: 'content missing'
+    })
+  }
+  
+  const note = {
+    content: body.content,
+    important: Boolean(body.important) || false,
+    id: generaterandomID(),
+  }
+
+  notes = notes.concat(note)
+
+  response.json(note)
+})
+
 const PORT = 3001
 app.listen(PORT, () => {
 console.log(`Server running on port ${PORT}`)
