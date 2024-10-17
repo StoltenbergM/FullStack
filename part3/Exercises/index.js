@@ -70,7 +70,7 @@ app.delete('/api/persons/:id', (request, response) => {
 const generaterandomID = () => {
   // generate random number from notes.length to 10000
   const minnumberID = notes.length > 0
-    ? Math.max(...notes.map(n => Number(n.id)))
+    ? notes.length
     : 0
   const random_number = Math.floor(Math.random() * 10000 + minnumberID)
   return random_number
@@ -79,17 +79,25 @@ const generaterandomID = () => {
 // post new person
 app.post('/api/persons', (request, response) => {  
   const body = request.body
+  const new_name = request.body.name
 
-  if (!body.content) {
+  // error code if name or number missing
+  if (!body.name || !body.number) {
     return response.status(400).json({
-      error: 'content missing'
+      error: 'information missing'
+    })
+  }
+  // Search if name already exist
+  if (notes.find(note => note.name === new_name)) {
+    return response.status(400).json({
+      error: 'name already exist'
     })
   }
   
   const note = {
-    content: body.content,
-    important: Boolean(body.important) || false,
-    id: generaterandomID(),
+    id: generaterandomID(),    
+    name: body.name,
+    number: body.number,
   }
 
   notes = notes.concat(note)
