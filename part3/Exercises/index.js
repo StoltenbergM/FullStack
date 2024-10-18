@@ -3,7 +3,19 @@ const morgan = require('morgan')
 
 const app = express()
 
-app.use(morgan('tiny'))
+app.use(express.json())
+
+// custom token for displaying the body in the console with morgan
+morgan.token('body', function getName (req) {
+  if (req.body.name) {
+    const readableBody = JSON.stringify(req.body)
+    return readableBody
+  } else {
+    return null
+  }
+})
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 let notes = [
     {
@@ -81,7 +93,7 @@ const generaterandomID = () => {
 // post new person
 app.post('/api/persons', (request, response) => {  
   const body = request.body
-  const new_name = request.body.name
+  const name = request.body.name
 
   // error code if name or number missing
   if (!body.name || !body.number) {
@@ -90,7 +102,7 @@ app.post('/api/persons', (request, response) => {
     })
   }
   // Search if name already exist
-  if (notes.find(note => note.name === new_name)) {
+  if (notes.find(note => note.name === name)) {
     return response.status(400).json({
       error: 'name already exist'
     })
