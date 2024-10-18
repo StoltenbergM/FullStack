@@ -1,7 +1,9 @@
 const express = require('express')
+const morgan = require('morgan')
+
 const app = express()
 
-app.use(express.json())
+app.use(morgan('tiny'))
 
 let notes = [
     {
@@ -104,6 +106,14 @@ app.post('/api/persons', (request, response) => {
 
   response.json(note)
 })
+
+// Middleware if no route is called (notice the middleware function is after the route)
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
 
 const PORT = 3001
 app.listen(PORT, () => {
