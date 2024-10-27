@@ -4,6 +4,8 @@ const cors = require('cors')
 
 const app = express()
 
+app.use(express.static('dist')) // to make Express show static content
+
 app.use(cors()) // enable requests from all origins (PORTS)
 
 app.use(express.json())
@@ -21,34 +23,40 @@ morgan.token('body', function getName (req) {
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 let notes = [
-    {
-      id: "1",
-      name: "Arto Hellas", 
-      number: "040-123456"
-    },
-    { 
-      id: "2",
-      name: "Ada Lovelace", 
-      number: "39-44-5323523"
-    },
-    { 
-      id: "3",
-      name: "Dan Abramov", 
-      number: "12-43-234345"
-    },
-    { 
-      id: "4",
-      name: "Mary Poppendieck", 
-      number: "39-23-6423122"
-    }
+  {
+    id: "1",
+    content: "HTML is easy",
+    important: true
+  },
+  {
+    id: "2",
+    content: "Browser can execute only JavaScript",
+    important: true
+  },
+  {
+    id: "3",
+    content: "GET and POST are the most important methods of HTTP protocol",
+    important: false
+  },
+  {
+    id: "a0f5",
+    content: "POST is used to create new ressources",
+    important: false
+  },
+  {
+    id: "6857",
+    content: "New note here",
+    important: true
+  }
 ]
 
-app.get('/api/persons', (request, response) => {
+app.get('/api/notes', (request, response) => {
   response.json(notes)
 })
 
+
 // make routes for different id, and 404 status code if it does not exist
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/notes/:id', (request, response) => {
   const id = request.params.id
   const note = notes.find(note => note.id === id)
   
@@ -77,7 +85,7 @@ app.get('/info', (request, response) => {
 })
 
 // making a delete route
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/notes/:id', (request, response) => {
   const id = request.params.id
   notes = notes.filter(note => note.id !== id)
 
@@ -93,28 +101,28 @@ const generaterandomID = () => {
   return random_number
 }
 
-// post new person
-app.post('/api/persons', (request, response) => {  
+// post new note
+app.post('/api/notes', (request, response) => {  
   const body = request.body
-  const name = request.body.name
+  const content = request.body.content
 
-  // error code if name or number missing
-  if (!body.name || !body.number) {
+  // error code if content missing
+  if (!body.content) {
     return response.status(400).json({
       error: 'information missing'
     })
   }
   // Search if name already exist
-  if (notes.find(note => note.name === name)) {
+  if (notes.find(note => note.content === content)) {
     return response.status(400).json({
-      error: 'name already exist'
+      error: 'content already exist'
     })
   }
   
   const note = {
     id: generaterandomID(),    
-    name: body.name,
-    number: body.number,
+    content: body.content,
+    important: true,
   }
 
   notes = notes.concat(note)
