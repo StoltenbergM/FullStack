@@ -7,13 +7,13 @@ app = 'fly-io-first-app'
 primary_region = 'ams'
 
 [build]
-  image = "flyio/hellofly:latest"
+  builder = "paketobuildpacks/builder:base"
 
 [env]
-  PORT = "3000"
+  PORT = "5173"
 
 [http_service]
-  internal_port = 3000
+  internal_port = 5173
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true

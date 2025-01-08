@@ -4,13 +4,13 @@ const cors = require('cors')
 
 const app = express()
 
+// Middleware
+
 app.use(express.static('dist')) // to make Express show static content
-
 app.use(cors()) // enable requests from all origins (PORTS)
-
 app.use(express.json())
 
-// custom token for displaying the body in the console with morgan
+// requestLogger - custom token for displaying the body in the console with morgan
 morgan.token('body', function getName (req) {
   if (req.body.name) {
     const readableBody = JSON.stringify(req.body)
@@ -79,9 +79,9 @@ const count_notes = () => {
 
 app.get('/info', (request, response) => {
   const show_time_stamp = Date(time())
-  const count_persons = count_notes()
+  const show_count_notes = count_notes()
   console.log("show_time", show_time_stamp)
-  response.send(`<p>Phonebook has info for ${count_persons} people</p><p>${show_time_stamp}<p>`)
+  response.send(`<p>Phonebook has info for ${show_count_notes} people</p><p>${show_time_stamp}<p>`)
 })
 
 // making a delete route

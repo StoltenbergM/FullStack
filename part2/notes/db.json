@@ -14,16 +14,6 @@
       "id": "3",
       "content": "GET and POST are the most important methods of HTTP protocol",
       "important": false
-    },
-    {
-      "id": "a0f5",
-      "content": "POST is used to create new ressources",
-      "important": false
-    },
-    {
-      "id": "6857",
-      "content": "New note here",
-      "important": true
     }
   ]
 }
