@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf dist && cd C:/Users/morte/VS Code Projects/FullStack/part2/Exercises/phonebook/ && npm run build && cp -r dist C:/Users/morte/VS Code Projects/FullStack/part3/Fly.io",
     "deploy": "fly deploy",
-    "deploy:full": "npm run build:ui && npm run deploy",    
+    "deploy:full": "npm run build:ui && npm run deploy",
     "logs:prod": "fly logs"
   },
   "author": "Morten Stoltenberg",
@@ -17,6 +17,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.0",
+    "mongoose": "^8.10.0",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
