@@ -80,8 +80,6 @@ const generaterandomID = () => {
 // post new contacts
 app.post('/api/contacts', (request, response) => {
   const body = request.body
-  const name = request.body.name
-  const number = request.body.number
 
   // error code if content missing
   if (body.name === undefined) {
