@@ -37,11 +37,24 @@ app.get('/api/contacts', (request, response) => {
 
 
 // make routes for different id with Mongoose's findById
-app.get('/api/contacts/:id', (request, response) => {
-    Contact.findById(request.params.id).then(contacts => {
-    response.json(contacts)
+app.get('/api/contacts/:id', (request, response, next) => {
+  const id = request.params.id 
+  console.log("Searching for ID:", id); // Log the ID
+
+  Contact.findById(request.params.id)
+  .then(contact => {
+    if (contact) {
+      response.json(contact)
+      // if there is no id found:
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => {
+      console.log("catch: ", error)
+      next(error)
+    })
   })
-})
 
 // Function that returns the CURRENT time (in miliseconds since 1970)
 const time = () => {
@@ -61,11 +74,12 @@ app.get('/info', (request, response) => {
 })
 
 // making a delete route
-app.delete('/api/contacts/:id', (request, response) => {
-  const id = request.params.id
-  contacts = contacts.filter(contacts => contacts.id !== id)
-
-  response.status(204).end()
+app.delete('/api/contacts/:id', (request, response, next) => {
+  Contact.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 const generaterandomID = () => {
@@ -102,6 +116,20 @@ const unknownEndpoint = (request, response) => {
 }
 
 app.use(unknownEndpoint)
+
+// error handler middleware
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+// this has to be the last loaded middleware, also all the routes should be registered before this!
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
