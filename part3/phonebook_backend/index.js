@@ -5,8 +5,8 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const { ReturnDocument } = require('mongodb')
-// getting our mongoDB code in models/note.js
-const Note = require('./models/note')
+// getting our mongoDB code in models/contact.js
+const Contact = require('./models/contact')
 
 const app = express()
 
@@ -28,26 +28,18 @@ morgan.token('body', function getName (req) {
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-let notes = [
-  {
-    id: "1",
-    content: "HTML is easy",
-    important: true
-  }
-]
-
-// fetching all notes
-app.get('/api/notes', (request, response) => {
-  Note.find({}).then(notes => {
-    response.json(notes)
+// fetching all contacts
+app.get('/api/contacts', (request, response) => {
+    Contact.find({}).then(contacts => {
+    response.json(contacts)
   })
 })
 
 
 // make routes for different id with Mongoose's findById
-app.get('/api/notes/:id', (request, response) => {
-  Note.findById(request.params.id).then(note => {
-    response.json(note)
+app.get('/api/contacts/:id', (request, response) => {
+    Contact.findById(request.params.id).then(contacts => {
+    response.json(contacts)
   })
 })
 
@@ -56,52 +48,53 @@ const time = () => {
   return Date.now()
 }
 
-// Function that counts the number of notes
-const count_notes = () => {
-  return notes.length
+// Function that counts the number of contacts
+const count_contacts = () => {
+  return contacts.length
 }
 
 app.get('/info', (request, response) => {
   const show_time_stamp = Date(time())
-  const show_count_notes = count_notes()
+  const show_count_contacts = count_contacts()
   console.log("show_time", show_time_stamp)
-  response.send(`<p>Phonebook has info for ${show_count_notes} people</p><p>${show_time_stamp}<p>`)
+  response.send(`<p>Phonebook has info for ${show_count_contacts} people</p><p>${show_time_stamp}<p>`)
 })
 
 // making a delete route
-app.delete('/api/notes/:id', (request, response) => {
+app.delete('/api/contacts/:id', (request, response) => {
   const id = request.params.id
-  notes = notes.filter(note => note.id !== id)
+  contacts = contacts.filter(contacts => contacts.id !== id)
 
   response.status(204).end()
 })
 
 const generaterandomID = () => {
-  // generate random number from notes.length to 10000
-  const minnumberID = notes.length > 0
-    ? notes.length
+  // generate random number from contacts.length to 10000
+  const minnumberID = contacts.length > 0
+    ? contacts.length
     : 0
   const random_number = Math.floor(Math.random() * 10000 + minnumberID)
   return random_number
 }
 
-// post new note
-app.post('/api/notes', (request, response) => {  
+// post new contacts
+app.post('/api/contacts', (request, response) => {
   const body = request.body
-  const content = request.body.content
+  const name = request.body.name
+  const number = request.body.number
 
   // error code if content missing
-  if (body.content === undefined) {
+  if (body.name === undefined) {
     return response.status(400).json({ error: 'content missing' })
   }
   
-  const note = new Note({
-    content: body.content,
-    important: body.important || false,
+  const contact = new Contact({
+    name: body.name,
+    number: body.number,
   })
 
-  note.save().then(savedNote => {
-    response.json(savedNote)
+  contact.save().then(savedContact => {
+    response.json(savedContact)
   })
 })
 

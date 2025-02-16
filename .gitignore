@@ -3,3 +3,4 @@
 **/node_modules
 mynotes.txt
 git_help.txt
+.env
