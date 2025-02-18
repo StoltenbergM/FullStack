@@ -82,6 +82,21 @@ app.delete('/api/contacts/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
+app.put('/api/contacts/:id', (request, response, next) => {
+  const body = request.body
+
+  const contact = {
+    content: body.content,
+    important: body.important,
+  }
+
+  Contact.findByIdAndUpdate(request.params.id, contact, { new: true })
+    .then(updatedContact => {
+      response.json(updatedContact)
+    })
+    .catch(error => next(error))
+})
+
 const generaterandomID = () => {
   // generate random number from contacts.length to 10000
   const minnumberID = contacts.length > 0
