@@ -61,16 +61,14 @@ const time = () => {
   return Date.now()
 }
 
-// Function that counts the number of contacts
-const count_contacts = () => {
-  return contacts.length
-}
-
+// counts the number of contacts
 app.get('/info', (request, response) => {
-  const show_time_stamp = Date(time())
-  const show_count_contacts = count_contacts()
-  console.log("show_time", show_time_stamp)
-  response.send(`<p>Phonebook has info for ${show_count_contacts} people</p><p>${show_time_stamp}<p>`)
+  const show_time_stamp = Date(time())  
+  Contact.countDocuments({})
+    .then(result => {
+      response.send(`<p>Phonebook has info for ${result} people</p><p>${show_time_stamp}<p>`)
+    })
+    .catch(error => next(error))
 })
 
 // making a delete route
