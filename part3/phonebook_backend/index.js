@@ -75,6 +75,7 @@ app.get('/info', (request, response) => {
 
 // making a delete route
 app.delete('/api/contacts/:id', (request, response, next) => {
+  console.log("Deleted contact")
   Contact.findByIdAndDelete(request.params.id)
     .then(result => {
       response.status(204).end()
@@ -82,29 +83,26 @@ app.delete('/api/contacts/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
+// change contact number
 app.put('/api/contacts/:id', (request, response, next) => {
   const body = request.body
 
   const contact = {
-    content: body.content,
-    important: body.important,
+    name: body.name,
+    number: body.number,
   }
 
-  Contact.findByIdAndUpdate(request.params.id, contact, { new: true })
+  console.log("new contact:", contact)
+  Contact.findByIdAndUpdate(request.params.id, contact, { new: true, runValidators: true })
     .then(updatedContact => {
+      if (!updatedContact) {
+        console.log("Contact not found");
+        return response.status(404).json({ error: "Contact not found" });
+      }
       response.json(updatedContact)
     })
     .catch(error => next(error))
 })
-
-const generaterandomID = () => {
-  // generate random number from contacts.length to 10000
-  const minnumberID = contacts.length > 0
-    ? contacts.length
-    : 0
-  const random_number = Math.floor(Math.random() * 10000 + minnumberID)
-  return random_number
-}
 
 // post new contacts
 app.post('/api/contacts', (request, response) => {

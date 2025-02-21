@@ -99,7 +99,7 @@ const App = () => {
         noteService
           .updateNumber(existingID, newNameandNumber)
           .then(returnedData => {
-            console.log(returnedData)
+            console.log("retuerned data:", returnedData)
             setPersons(persons.map(n => n.id !== existingID ? n : returnedData))
             console.log('updating the number for ', existingID)
           })
