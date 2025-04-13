@@ -65,36 +65,22 @@ app.get('/info', (request, response) => {
   const show_time_stamp = Date(time())
   const show_count_notes = count_notes()
   console.log("show_time", show_time_stamp)
-  response.send(`<p>Phonebook has info for ${show_count_notes} people</p><p>${show_time_stamp}<p>`)
+  response.send(`<p>Notes has info for ${show_count_notes} people</p><p>${show_time_stamp}<p>`)
 })
 
 // making a delete route
-app.delete('/api/notes/:id', (request, response) => {
-  const id = request.params.id
-  notes = notes.filter(note => note.id !== id)
-
-  response.status(204).end()
+app.delete('/api/notes/:id', (request, response, next) => {
+  Note.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
-const generaterandomID = () => {
-  // generate random number from notes.length to 10000
-  const minnumberID = notes.length > 0
-    ? notes.length
-    : 0
-  const random_number = Math.floor(Math.random() * 10000 + minnumberID)
-  return random_number
-}
-
 // post new note
-app.post('/api/notes', (request, response) => {  
+app.post('/api/notes', (request, response, next) => {  
   const body = request.body
-  const content = request.body.content
 
-  // error code if content missing
-  if (body.content === undefined) {
-    return response.status(400).json({ error: 'content missing' })
-  }
-  
   const note = new Note({
     content: body.content,
     important: body.important || false,
@@ -103,18 +89,18 @@ app.post('/api/notes', (request, response) => {
   note.save().then(savedNote => {
     response.json(savedNote)
   })
+  .catch(error => next(error))
 })
 
-// put ?
+// if a note is edited
 app.put('/api/notes/:id', (request, response, next) => {
-  const body = request.body
+  const { content, important } = request.body
 
-  const note = {
-    content: body.content,
-    important: body.important,
-  }
-
-  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+  Note.findByIdAndUpdate(
+    request.params.id,
+    { content, important },
+    { new: true, runValidators: true, context: 'query' }
+  )
     .then(updatedNote => {
       response.json(updatedNote)
     })
@@ -134,7 +120,9 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
 
   next(error)
 }
@@ -143,6 +131,6 @@ const errorHandler = (error, request, response, next) => {
 app.use(errorHandler)
 
 const PORT = process.env.PORT
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`)
 })

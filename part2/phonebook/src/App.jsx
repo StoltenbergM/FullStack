@@ -125,14 +125,24 @@ const App = () => {
           setNotificationMessage(
             `Added '${newNameandNumber.name}'`
           )
+          setErrorMessage(false)
           setTimeout(() => {
             setNotificationMessage(null)
           }, 3000)
         })
-    }
+        .catch(error => {
+          console.error('Error from backend:', error.response.data.error)
+          setNotificationMessage(error.response.data.error || 'Something went wrong')
+          setErrorMessage(true)
+          setTimeout(() => {
+            setNotificationMessage(null)
+            setErrorMessage(false)
+          }, 3000)
+        })
+      }
     setNewName('')
     setNewNumber('')
-  }
+    }
 
   const handleFilter = (event) => {
     setNewFilter(event.target.value)

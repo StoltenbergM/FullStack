@@ -73,7 +73,6 @@ app.get('/info', (request, response) => {
 
 // making a delete route
 app.delete('/api/contacts/:id', (request, response, next) => {
-  console.log("Deleted contact")
   Contact.findByIdAndDelete(request.params.id)
     .then(result => {
       response.status(204).end()
@@ -109,6 +108,12 @@ app.post('/api/contacts', (request, response) => {
   // error code if content missing
   if (body.name === undefined) {
     return response.status(400).json({ error: 'content missing' })
+  }
+
+  // error code if name is too short
+  console.log(body.name)
+  if (body.name.length < 4) {
+    return response.status(400).json({ error: 'name too short' })
   }
   
   const contact = new Contact({
