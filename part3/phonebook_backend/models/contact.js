@@ -14,7 +14,7 @@ mongoose.connect(url)
 
 const phonebookSchema = new mongoose.Schema({
   name: String,
-  number: Number,
+  number: String,
 })
 
 // transform the Schema method, to avoid returned __v and _id

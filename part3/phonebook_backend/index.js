@@ -111,11 +111,24 @@ app.post('/api/contacts', (request, response) => {
   }
 
   // error code if name is too short
-  console.log(body.name)
+  console.log(body.number.length)
   if (body.name.length < 4) {
     return response.status(400).json({ error: 'name too short' })
   }
   
+  // error if phone number is not 8 or more - and format XX-XXX...
+  const phonenumber = body.number.split("-")
+  console.log(phonenumber)
+  console.log(phonenumber.length)
+  if (
+    body.number.length < 8 ||
+    phonenumber.length != 2 ||
+    phonenumber[0].length != 2 ||
+    phonenumber[1].length < 5
+    ) {
+    return response.status(400).json({ error: 'phone number invalid' })
+  }
+
   const contact = new Contact({
     name: body.name,
     number: body.number,
