@@ -4,7 +4,7 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
-const { ReturnDocument } = require('mongodb')
+// const { ReturnDocument } = require('mongodb')
 // getting our mongoDB code in models/contact.js
 const Contact = require('./models/contact')
 
@@ -30,7 +30,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 // fetching all contacts
 app.get('/api/contacts', (request, response) => {
-    Contact.find({}).then(contacts => {
+  Contact.find({}).then(contacts => {
     response.json(contacts)
   })
 })
@@ -38,23 +38,23 @@ app.get('/api/contacts', (request, response) => {
 
 // make routes for different id with Mongoose's findById
 app.get('/api/contacts/:id', (request, response, next) => {
-  const id = request.params.id 
-  console.log("Searching for ID:", id); // Log the ID
+  const id = request.params.id
+  console.log('Searching for ID:', id) // Log the ID
 
   Contact.findById(request.params.id)
-  .then(contact => {
-    if (contact) {
-      response.json(contact)
-      // if there is no id found:
+    .then(contact => {
+      if (contact) {
+        response.json(contact)
+        // if there is no id found:
       } else {
         response.status(404).end()
       }
     })
     .catch(error => {
-      console.log("catch: ", error)
+      console.log('catch: ', error)
       next(error)
     })
-  })
+})
 
 // Function that returns the CURRENT time (in miliseconds since 1970)
 const time = () => {
@@ -62,8 +62,8 @@ const time = () => {
 }
 
 // counts the number of contacts
-app.get('/info', (request, response) => {
-  const show_time_stamp = Date(time())  
+app.get('/info', (request, response, next) => {
+  const show_time_stamp = Date(time())
   Contact.countDocuments({})
     .then(result => {
       response.send(`<p>Phonebook has info for ${result} people</p><p>${show_time_stamp}<p>`)
@@ -74,7 +74,7 @@ app.get('/info', (request, response) => {
 // making a delete route
 app.delete('/api/contacts/:id', (request, response, next) => {
   Contact.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -89,12 +89,12 @@ app.put('/api/contacts/:id', (request, response, next) => {
     number: body.number,
   }
 
-  console.log("new contact:", contact)
+  console.log('new contact:', contact)
   Contact.findByIdAndUpdate(request.params.id, contact, { new: true, runValidators: true })
     .then(updatedContact => {
       if (!updatedContact) {
-        console.log("Contact not found");
-        return response.status(404).json({ error: "Contact not found" });
+        console.log('Contact not found')
+        return response.status(404).json({ error: 'Contact not found' })
       }
       response.json(updatedContact)
     })
@@ -115,17 +115,17 @@ app.post('/api/contacts', (request, response) => {
   if (body.name.length < 4) {
     return response.status(400).json({ error: 'name too short' })
   }
-  
+
   // error if phone number is not 8 or more - and format XX-XXX...
-  const phonenumber = body.number.split("-")
+  const phonenumber = body.number.split('-')
   console.log(phonenumber)
   console.log(phonenumber.length)
   if (
     body.number.length < 8 ||
-    phonenumber.length != 2 ||
-    phonenumber[0].length != 2 ||
+    phonenumber.length !== 2 ||
+    phonenumber[0].length !== 2 ||
     phonenumber[1].length < 5
-    ) {
+  ) {
     return response.status(400).json({ error: 'phone number invalid' })
   }
 
@@ -152,7 +152,7 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  }
 
   next(error)
 }
